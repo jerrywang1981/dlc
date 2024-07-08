@@ -1,7 +1,9 @@
 package server
 
 from net import http.{HttpResponseBuilder, HttpRequest}
+from std import io.ByteArrayStream
 from crypto import x509.X509Certificate
+from encoding import json.stream.*
 
 public class HttpContext <: ToString {
     // the map to hold any data you want to have in handler chain
@@ -48,6 +50,15 @@ public class HttpContext <: ToString {
 
     public func string(status: UInt16, content: String): HttpResponseBuilder {
         this.context.responseBuilder.status(status).body(content)
+    }
+
+    public func json<T>(status: UInt16, data: T): HttpResponseBuilder where T <: JsonSerializable {
+        let stream = ByteArrayStream()
+        let writer = JsonWriter(stream)
+        writer.writeValue(data)
+        writer.flush()
+        this.context.responseBuilder.status(status).header("Content-Type", "application/json; charset=utf-8").body(
+            stream)
     }
 
     public func toString(): String {
