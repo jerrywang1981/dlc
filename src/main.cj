@@ -17,10 +17,10 @@ class A <: JsonSerializable {
         w.endObject()
     }
 }
-/*
+
 main(): Int64 {
 
-    let engine = Engine("127.0.0.1", 8888)
+    let engine = Engine("0.0.0.0", 8888)
     let h: HandlerFunc = {
         ctx =>
         println("this is in handler")
@@ -38,8 +38,8 @@ main(): Int64 {
             ctx =>
             println("m1: this is before the handler")
             println(ctx.param["name"])
-            println(ctx.query["q"])
-            println(ctx.query["b"])
+            println(ctx.getQuery("q"))
+            println(ctx.getQuery("b"))
             next(ctx)
             println("m1: this is after the handler")
         }
@@ -55,6 +55,6 @@ main(): Int64 {
     engine.mount("/p/hello", Router())
     engine.mount("/p/hello/:name/list", "GET", h, m1, m2)
     engine.run()
-  
+
     return 0
-}  */
+}

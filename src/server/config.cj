@@ -34,6 +34,5 @@ public func setConfig(c: Config) {
 func getDefaultConfig() {
     let c = Config()
     c.preMiddlewares.append(paramMiddleware)
-    c.preMiddlewares.append(queryMiddleware)
     c
 }

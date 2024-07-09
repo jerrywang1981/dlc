@@ -1,17 +1,18 @@
 package server
 
 from net import http.{HttpResponseBuilder, HttpRequest}
-from std import io.ByteArrayStream
+from std import io.ByteArrayStream, collection.ArrayList
 from crypto import x509.X509Certificate
-from encoding import json.stream.*
+from encoding import json.stream.*, url.*
 
 public class HttpContext <: ToString {
     // the map to hold any data you want to have in handler chain
     public let data = DMap()
     private let _param = Pair()
-    private let _query = Pair()
+    private let _query:url.Form
 
     HttpContext(public let context: http.HttpContext) {
+      this._query = context.request.url.queryForm
     }
 
     public prop responseBuilder: HttpResponseBuilder {
@@ -38,10 +39,22 @@ public class HttpContext <: ToString {
         }
     }
 
-    public prop query: Pair {
+    public prop query: url.Form {
         get() {
             this._query
         }
+    }
+
+    public func getQuery(key: String): String {
+      this._query.get(key).getOrDefault({=>""})
+    }
+
+    public func getQueryDefault(key: String, defaultValue: String): String {
+      this._query.get(key).getOrDefault({=>defaultValue})
+    }
+
+    public func getQueryAll(key: String): ArrayList<String> {
+      this._query.getAll(key)
     }
 
     public func html(status: UInt16, content: String): HttpResponseBuilder {

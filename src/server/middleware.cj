@@ -31,6 +31,7 @@ func paramMiddleware(next: HandlerFunc): HandlerFunc {
     }
 }
 
+/*
 func queryMiddleware(next: HandlerFunc): HandlerFunc {
     {
         ctx =>
@@ -49,3 +50,4 @@ func queryMiddleware(next: HandlerFunc): HandlerFunc {
         next(ctx)
     }
 }
+*/
