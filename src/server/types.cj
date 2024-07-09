@@ -1,10 +1,6 @@
 package server
 
 from std import collection.HashMap
-from std import log.*
-from std import console.*
-
-let logger: SimpleLogger = SimpleLogger("[DLC WEB Server]", LogLevel.ALL, Console.stdOut)
 
 public type HandlerFunc = (HttpContext) -> Unit
 

@@ -8,10 +8,11 @@ public class Pair <: ToString {
     public Pair() {}
 
     public func set(map: Map<String, String>) {
-        if (!b) {
-            for ((k, v) in map) {
-                data.put(k, v)
-            }
+        if (b) {
+            throw Exception("You cannot call set method more than once")
+        }
+        for ((k, v) in map) {
+            data.put(k, v)
         }
         b = true
     }

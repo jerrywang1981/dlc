@@ -66,6 +66,11 @@ public class Engine <: IMountable<Engine> {
         this
     }
 
+
+    public func getRouterGroup(path: String): ?Router {
+      this.router.getRouterGroup(path)
+    }
+
     private func combineMiddlewares(chain: ArrayList<RouterSearchResult>, method: String): MiddlewareFunc {
         let middlewares = ArrayList<MiddlewareFunc>()
         for (i in chain) {
@@ -88,30 +93,14 @@ public class Engine <: IMountable<Engine> {
         let path = ctx.request.url.path
 
         // try to find in cache first
-        if (let Some(v) <- config.cache.get(method + path)) {
-            return v(HttpContext(ctx))
+        if (let (k, Some(v)) <- config.cache.get(method + path)) {
+            let context = HttpContext(ctx)
+            context.data.put("ROUTER_RESULT", (k, method + path))
+            return v(context)
         }
 
         let (chain, cb) = this.router.getHandlers(path, method)
 
-        /*
-        match (cb) {
-            case Some(v) => match (chain) {
-                case Some(w) =>
-                    let middleware = config.postMiddleware ~> this.combineMiddlewares(w, method) ~> config.preMiddleware
-                    let newHandler = v |> middleware
-                    // cache it
-                    let ckey = this.getCacheKey(w, method, path.hasTrailingSlash)
-                    config.cache.put(ckey, newHandler)
-                    let context = HttpContext(ctx)
-                    // save some data into the context
-                    context.data.put("ROUTER_RESULT", w)
-                    return newHandler(context)
-                case None => println("path: ${path}, method: ${method} handler found, but something went wrong")
-            }
-            case None => println("path: ${path}, method: ${method} handler not found")
-        }
-         */
         if (let Some(v) <- cb) {
             if (let Some(w) <- chain) {
                 let middleware = config.postMiddleware ~> this.combineMiddlewares(w, method) ~> config.preMiddleware

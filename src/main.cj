@@ -17,16 +17,19 @@ class A <: JsonSerializable {
         w.endObject()
     }
 }
-
+/*
 main(): Int64 {
+
     let engine = Engine("127.0.0.1", 8888)
     let h: HandlerFunc = {
         ctx =>
         println("this is in handler")
-        let m = HashMap<String, Int64>()
+        let m = HashMap<String, JsonSerializable>()
         m.put("1", 1)
         m.put("2", 2)
-        ctx.json(200, A())
+        m.put("name", ctx.param["name"])
+        ctx.json(200, m)
+        //ctx.json(200, A())
         //ctx.json(200, Array<Int64>([1, 2, 3, 4]))
     }
 
@@ -50,7 +53,8 @@ main(): Int64 {
         }
     }
     engine.mount("/p/hello", Router())
-    engine.mount("/p/hello/:name", "GET", h, m1, m2)
+    engine.mount("/p/hello/:name/list", "GET", h, m1, m2)
     engine.run()
+  
     return 0
-}
+}  */

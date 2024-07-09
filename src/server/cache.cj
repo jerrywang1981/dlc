@@ -3,7 +3,7 @@ package server
 from std import collection.HashMap
 
 public interface ICache {
-    func get(key: String): ?HandlerFunc
+    func get(key: String): (String, ?HandlerFunc)
     func put(key: String, handler: HandlerFunc): Unit
     func destroy(): Unit
 }
@@ -44,21 +44,21 @@ public class HandlerCache <: ICache {
         }
     }
 
-    public func get(key: String): ?HandlerFunc {
+    public func get(key: String): (String, ?HandlerFunc) {
         // exact match
         for ((k, v) in this.map) {
             if (this.compareStr(k, key)) {
-                return Some(v)
+                return (k, Some(v))
             }
         }
         // fuzzy search
 
         for ((k, v) in this.map) {
             if (this.compareStr(k, key, exact: false)) {
-                return Some(v)
+                return (k, Some(v))
             }
         }
-        None
+        ("", None)
     }
 
     public func put(key: String, handler: HandlerFunc): Unit {

@@ -7,6 +7,9 @@ public class DMap {
     init() {}
 
     public func put(key: String, value: Any): Option<Any> {
+        if (this.data.contains(key)) {
+            throw Exception("The key exists already")
+        }
         this.data.put(key, value)
     }
 

@@ -67,6 +67,16 @@ public class Router <: ToString & IMountable<Router> {
         return this
     }
 
+    /**
+     * mount the router method handler
+     *
+     * @param path String the mount path, e.g. /hello/jerry, /product/:id, /product/:id/list
+     * @param method String the request method, GET/POST/PUT/DELETE/PATCH/OPTIONS
+     * @param handler HandlerFunc the handler function to process/handle the request
+     * @param middlewares Array<MiddlewareFunc> the middlewares of this path/endpoint
+     *
+     * @return this router
+     */
     public func mount(path: String, method: String, handler: HandlerFunc, middlewares: Array<MiddlewareFunc>): This {
         let p = this.normPath(path.trim())
         // if p is "/"
@@ -306,7 +316,13 @@ public class Router <: ToString & IMountable<Router> {
         this.routerGroups.contains(path.p_S)
     }
 
-    func getRouterGroup(path: String): ?Router {
+    /**
+     * get the router group by path
+     * @param path String e.g. /hello/jerry
+     * @return Option<Router> the router
+     *
+     */
+    public func getRouterGroup(path: String): ?Router {
         let p = this.normPath(path.trim())
         let pArr = p.toArr()
         if (pArr.size == 0) {
