@@ -339,6 +339,16 @@ public class Router <: ToString & IMountable<Router> {
         }
     }
 
+    public func staticFileHandler(relativePath: String, handler: HandlerFunc): This {
+      if (relativePath.contains(COLON) || relativePath.contains(STAR)) {
+        throw Exception("URL cannot contain colon or star when serving static files")
+      }
+
+      this.get(relativePath, handler)
+      this.head(relativePath, handler)
+      this
+    }
+
     public func toString(): String {
         let sb = StringBuilder("*******************Router(start)*******************\n")
         sb.append("Router keys: \n")
