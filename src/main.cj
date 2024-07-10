@@ -27,7 +27,7 @@ main(): Int64 {
         let m = HashMap<String, JsonSerializable>()
         m.put("1", 1)
         m.put("2", 2)
-        m.put("name", ctx.param["name"])
+        m.put("name", ctx.getPathParam("name"))
         ctx.json(200, m)
         //ctx.json(200, A())
         //ctx.json(200, Array<Int64>([1, 2, 3, 4]))
@@ -37,7 +37,7 @@ main(): Int64 {
         next => {
             ctx =>
             println("m1: this is before the handler")
-            println(ctx.param["name"])
+            println(ctx.getPathParam("name"))
             println(ctx.getQuery("q"))
             println(ctx.getQuery("b"))
             next(ctx)

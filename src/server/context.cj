@@ -8,7 +8,7 @@ from encoding import json.stream.*, url.*
 public class HttpContext <: ToString {
     // the map to hold any data you want to have in handler chain
     public let data = DMap()
-    private let _param = Pair()
+    protected let _param: url.Form = url.Form()
     private let _query:url.Form
 
     HttpContext(public let context: http.HttpContext) {
@@ -33,6 +33,7 @@ public class HttpContext <: ToString {
         }
     }
 
+    /*
     public prop param: Pair {
         get() {
             this._param
@@ -43,6 +44,15 @@ public class HttpContext <: ToString {
         get() {
             this._query
         }
+    }
+    */
+
+    public func getPathParam(key: String): String {
+      this._param.get(key).getOrDefault({=>""})
+    }
+
+    public func getPathParamDefault(key: String, defaultValue: String): String {
+      this._param.get(key).getOrDefault({=>defaultValue})
     }
 
     public func getQuery(key: String): String {
