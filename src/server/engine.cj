@@ -7,6 +7,8 @@ public class Engine <: IMountable<Engine> {
     private let server: Server
     private let router: Router
 
+    public let config: Config = Config()
+
     public Engine(addr: String, port: UInt16) {
         this.router = Router()
         this.server = ServerBuilder().addr(addr).port(port).distributor(HttpRequestDistributor()).build()
@@ -66,9 +68,8 @@ public class Engine <: IMountable<Engine> {
         this
     }
 
-
     public func getRouterGroup(path: String): ?Router {
-      this.router.getRouterGroup(path)
+        this.router.getRouterGroup(path)
     }
 
     private func combineMiddlewares(chain: ArrayList<RouterSearchResult>, method: String): MiddlewareFunc {
@@ -119,4 +120,29 @@ public class Engine <: IMountable<Engine> {
             ctx => ctx.responseBuilder.status(HttpStatusCode.STATUS_NOT_FOUND)
         }).handle(ctx)
     }
+
+    public func configuration(opts: Array<(Engine) -> Engine>): This {
+        for (i in opts) {
+            i(this)
+        }
+        this
+    }
+
+    public func use(middlewares: Array<MiddlewareFunc>) : This {
+      this.router.use(middlewares)
+      this
+    }
+}
+
+public func getDefaultEngine(opts: Array<(Engine) -> Engine>): Engine {
+    let engine = Engine("0.0.0.0", 8888)
+    engine.configuration(opts)
+    engine.configuration(
+        {
+            e: Engine =>
+            e.config.preMiddlewares.append(paramMiddleware)
+            e
+        }
+    )
+    engine
 }

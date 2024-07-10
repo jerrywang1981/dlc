@@ -3,8 +3,6 @@ package server
 from std import collection.{reduce, ArrayList}
 
 public class Config {
-    public var caseSensitive: Bool = false
-    public var noRouterConflict: Bool = true
     public let preMiddlewares: ArrayList<MiddlewareFunc> = ArrayList<MiddlewareFunc>()
     public let postMiddlewares: ArrayList<MiddlewareFunc> = ArrayList<MiddlewareFunc>()
     public var cache: ICache = HandlerCache()
@@ -25,14 +23,15 @@ public class Config {
     }
 }
 
-public var config = getDefaultConfig()
-
-public func setConfig(c: Config) {
-    config = c
-}
-
+/*
 func getDefaultConfig() {
     let c = Config()
     c.preMiddlewares.append(paramMiddleware)
     c
+}
+ */
+public class RouterConfig {
+    public var caseSensitive: Bool = false
+    public var noRouterConflict: Bool = true
+    init() {}
 }

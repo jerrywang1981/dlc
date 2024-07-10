@@ -13,6 +13,8 @@ public class Router <: ToString & IMountable<Router> {
     // router method level middleware
     private let methodMiddlewares: Map<String, Map<String, ArrayList<MiddlewareFunc>>>
 
+    public let config:RouterConfig = RouterConfig()
+
     public Router() {
         this.routers = HashMap<String, Map<String, HandlerFunc>>()
         this.routerGroups = HashMap<String, Router>()
@@ -21,7 +23,7 @@ public class Router <: ToString & IMountable<Router> {
     }
 
     private func normPath(path: String): String {
-        if (config.caseSensitive) {
+        if (this.config.caseSensitive) {
             path
         } else {
             path.toAsciiLower()
@@ -41,7 +43,7 @@ public class Router <: ToString & IMountable<Router> {
         // handler
         match (this.routers.get(key)) {
             case Some(v) => match (v.get(method)) {
-                case Some(w) => if (config.noRouterConflict) {
+                case Some(w) => if (this.config.noRouterConflict) {
                     throw RouterConflictException(path)
                 } else {
                     v.put(method, handler)
@@ -152,7 +154,7 @@ public class Router <: ToString & IMountable<Router> {
         if (pArr.size == 1) {
             let k = pArr[0].p_S
             if (this.routerGroups.contains(k)) {
-                if (config.noRouterConflict) {
+                if (this.config.noRouterConflict) {
                     throw RouterConflictException(path)
                 } else {
                     this.routerGroups.put(k, router)
@@ -346,6 +348,18 @@ public class Router <: ToString & IMountable<Router> {
 
       this.get(relativePath, handler)
       this.head(relativePath, handler)
+      this
+    }
+
+    public func configuration(opts: Array<(Router) -> Router>): This {
+      for (i in opts) {
+        i(this)
+      }
+      this
+    }
+
+    public func use(middlewares: Array<MiddlewareFunc>) : This {
+      this.middlewares.appendAll(middlewares)
       this
     }
 

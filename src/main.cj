@@ -20,7 +20,7 @@ class A <: JsonSerializable {
 
 main(): Int64 {
 
-    let engine = Engine("0.0.0.0", 8888)
+    let engine = server.getDefaultEngine()
     let h: HandlerFunc = {
         ctx =>
         println("this is in handler")
